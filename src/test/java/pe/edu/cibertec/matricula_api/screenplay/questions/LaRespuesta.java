@@ -21,4 +21,22 @@ public class LaRespuesta {
                 .answeredBy(actor -> SerenityRest.lastResponse().jsonPath().getList("$").size());
     }
 
+    public static Question<Integer> campoEntero(String ruta){
+        return Question.about("el campo entero " + ruta)
+                .answeredBy(actor -> SerenityRest.lastResponse().jsonPath().getInt(ruta));
+    }
+
+    public static Question<Double> campoDecimal(String ruta){
+        return Question.about("el campo decimal " + ruta)
+                .answeredBy(actor -> SerenityRest.lastResponse().jsonPath().getDouble(ruta));
+    }
+
+    public static Question<Boolean> campoConValor(String ruta){
+        return Question.about("el campo " + ruta + " tiene valor")
+                .answeredBy(actor -> {
+                    Object valor = SerenityRest.lastResponse().jsonPath().get(ruta);
+                    return valor != null && !String.valueOf(valor).isBlank();
+                });
+    }
+
 }

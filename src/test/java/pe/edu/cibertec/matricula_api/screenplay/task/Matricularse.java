@@ -2,6 +2,7 @@ package pe.edu.cibertec.matricula_api.screenplay.task;
 
 import io.restassured.http.ContentType;
 import net.serenitybdd.annotations.Step;
+import net.serenitybdd.rest.SerenityRest;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Task;
 import net.serenitybdd.screenplay.rest.interactions.Post;
@@ -29,10 +30,14 @@ public class Matricularse implements Task {
         actor.attemptsTo(
                 Post.to("/api/matriculas")
                         .with(req -> req.contentType(ContentType.JSON)
+                                .header("Authorization", "Bearer " + actor.recall("token"))
                                 .body(
                                         Map.of("codigoAlumno", alumno, "codigoCurso", curso)
                                 )
                         )
         );
+        if (SerenityRest.lastResponse().statusCode() == 201) {
+            actor.remember("idMatricula", SerenityRest.lastResponse().jsonPath().getInt("id"));
+        }
     }
 }
